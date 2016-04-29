@@ -27,12 +27,14 @@ var app = {
     initialize: function() {
         this.service = new AvalonService();
         this.service.initialize().done(this.bindEvents());
+        console.log('initializing service');
     },
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
+        console.log('service initialized, service=' + this.service)
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
     // deviceready Event Handler
@@ -46,11 +48,9 @@ var app = {
     },
 
     _initApp: function() {
-        if (navigator.StatusBar) {
-            navigator.StatusBar.overlaysWebView( false );
-            navigator.StatusBar.backgroundColorByHexString('#ffffff');
-            navigator.StatusBar.styleDefault();
-        }
+        // navigator.StatusBar.overlaysWebView( false );
+        // navigator.StatusBar.backgroundColorByHexString('#ffffff');
+        // navigator.StatusBar.styleDefault();
         if (navigator.notification) {
             window.alert = function (message) {
                 navigator.notification.alert(
@@ -66,10 +66,12 @@ var app = {
 
     _initTemplates: function() {
         HomeView.prototype.template = Handlebars.compile($("#home-tpl").html());
+        ReadyView.prototype.template = Handlebars.compile($("#ready-tpl").html());
+        CharacterView.prototype.template = Handlebars.compile($("#character-tpl").html());
     },
 
     _initRouter: function() {
-        self = this;
+        var self = this;
         router.addRoute('', function() {
             $('body').html(new HomeView(self.service).render().$el);
         });

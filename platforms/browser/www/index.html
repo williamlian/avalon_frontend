@@ -25,12 +25,18 @@
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
+
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
     <!-- <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
     <script src="lib/jquery.js"></script>
     <script src="lib/fastclick.js"></script>
     <script src="lib/handlebars.js"></script>
+    <script src="assets/ratchet/js/ratchet.js"></script>
 
     <link href="assets/ratchet/css/ratchet.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/index.css" />
@@ -44,11 +50,46 @@
         <header class="bar bar-nav">
             <h1 class="title">Avalon</h1>
         </header>
+        <nav class="bar bar-header-secondary">
+            <div class="segmented-control">
+                <span class="control-item active" id="new">New Game</span>
+                <span class="control-item" id="join">Join Game</span>
+            </div>
+        </nav>
         <div class="content">
-            <form class="input-group">
-                <input type="text" placeholder="Group Size" id="size">
-                <button class="btn btn-primary btn-block" id="create">Create</button>
-            </form>
+        </div>
+    </script>
+    <script id="new-subtpl" type="text/template">
+        <form class="input-group">
+            <input type="text" placeholder="Group Size" id="size">
+            <button class="btn btn-primary btn-block" id="create">Create</button>
+        </form>
+    </script>
+    <script id="join-subtpl" type="text/template">
+        <form class="input-group">
+            <input type="text" placeholder="Room Number" id="group_id">
+            <button class="btn btn-primary btn-block" id="join">Join</button>
+        </form>
+    </script>
+
+    <script id="character-tpl" type="text/template">
+        <header class="bar bar-nav">
+            <h1 class="title">Select Characters</h1>
+        </header>
+        <div class="content">
+            <ul class="table-view">
+                {{#each this}}
+                <li class="table-view-cell">
+                    {{ this }}
+                    <div class="toggle">
+                        <div class="toggle-handle"></div>
+                    </div>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+        <div class="bar bar-standard bar-footer">
+            <button class="btn btn-primary btn-block" id="submit">Submit</button>
         </div>
     </script>
 
@@ -56,31 +97,41 @@
         <header class="bar bar-nav">
             <h1 class="title">Get Ready</h1>
         </header>
-        <div class="bar bar-standard bar-header-secondary">
-            <ul class="table-view">
-                <li class="table-view-cell"><strong>Group ID</strong>{{ group.id }}</li>
-                <li class="table-view-cell"><strong>Players</strong>{{ group.player_count }}</li>
-                <li class="table-view-cell"><strong>Player ID</strong>{{ player.id }}</li>
-            </ul>
-        </div>
-
         <div class="content">
-
+            <ul class="table-view">
+                <li class="table-view-cell">
+                    <strong class="pull-left">Group ID</strong>
+                    <div class="pull-right">{{ group.id }}</div>
+                </li>
+                <li class="table-view-cell">
+                    <strong class="pull-left">Players</strong>
+                    <div class="pull-right">{{ group.player_count }}</div>
+                </li>
+                <li class="table-view-cell">
+                    <strong class="pull-left">Group Size</strong>
+                    <div class="pull-right">{{ group.size }}</div>
+                </li>
+                <li class="table-view-cell">
+                    <strong class="pull-left">Character</strong>
+                    <div class="pull-right">{{ player.character }}</div>
+                </li>
+            </ul>
             <form class="input-group">
                 <input type="text" placeholder="Name" id="name">
-                <button class="btn btn-primary btn-block" id="create">Create</button>
+                <button class="btn btn-primary btn-block" id="ready">Ready</button>
             </form>
         </div>
     </script>
 
 
     <script type="text/javascript" src="cordova.js"></script>
-    <script src="lib/router.js"></script>
+    <script type="text/javascript" src="lib/router.js"></script>
     <script type="text/javascript" src="js/services/AvalonService.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
 
     <script type="text/javascript" src="js/views/HomeView.js"></script>
     <script type="text/javascript" src="js/views/ReadyView.js"></script>
+    <script type="text/javascript" src="js/views/CharacterView.js"></script>
 
     <script type="text/javascript">
         app.initialize();
