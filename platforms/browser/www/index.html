@@ -76,10 +76,16 @@
         <header class="bar bar-nav">
             <h1 class="title">Select Characters</h1>
         </header>
+        <nav class="bar bar-header-secondary">
+            <p style="text-align: center;"><span id="select-count">0</span> Selected</p>
+        </nav>
+        <div class="bar bar-standard bar-footer">
+            <button class="btn btn-primary btn-block" id="submit">Submit</button>
+        </div>
         <div class="content">
             <ul class="table-view">
                 {{#each this}}
-                <li class="table-view-cell">
+                <li class="table-view-cell character" name="{{ this }}">
                     {{ this }}
                     <div class="toggle">
                         <div class="toggle-handle"></div>
@@ -87,9 +93,6 @@
                 </li>
                 {{/each}}
             </ul>
-        </div>
-        <div class="bar bar-standard bar-footer">
-            <button class="btn btn-primary btn-block" id="submit">Submit</button>
         </div>
     </script>
 
@@ -123,6 +126,43 @@
         </div>
     </script>
 
+    <script id="game-tpl" type="text/template">
+        <header class="bar bar-nav">
+            <h1 class="title">Playing</h1>
+        </header>
+        <div class="bar bar-standard bar-footer">
+            <button class="btn btn-primary btn-block" id="refresh">Refresh</button>
+        </div>
+        <div class="content">
+            <ul class="table-view">
+                <li class="table-view-cell">
+                    <strong class="pull-left">Group ID</strong>
+                    <div class="pull-right">{{ group.id }}</div>
+                </li>
+                <li class="table-view-cell">
+                    <strong class="pull-left">Players</strong>
+                    <div class="pull-right">{{ group.player_count }}</div>
+                </li>
+                <li class="table-view-cell">
+                    <strong class="pull-left">Group Size</strong>
+                    <div class="pull-right">{{ group.size }}</div>
+                </li>
+                <li class="table-view-cell">
+                    <strong class="pull-left">Character</strong>
+                    <div class="pull-right">{{ player.character }}</div>
+                </li>
+            </ul>
+            <ul class="table-view">
+                {{#each group.players}}
+                <li class="table-view-cell media">
+                    <p>{{ this.name }}</p>
+                    <p>{{ this.character }}</p>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+    </script>
+
 
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="lib/router.js"></script>
@@ -132,6 +172,7 @@
     <script type="text/javascript" src="js/views/HomeView.js"></script>
     <script type="text/javascript" src="js/views/ReadyView.js"></script>
     <script type="text/javascript" src="js/views/CharacterView.js"></script>
+    <script type="text/javascript" src="js/views/GameView.js"></script>
 
     <script type="text/javascript">
         app.initialize();

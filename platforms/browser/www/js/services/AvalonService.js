@@ -24,6 +24,15 @@ var AvalonService = function() {
         });
     }
 
+    this.updateCharacters = function(group, player, characters) {
+        return $.ajax({
+            url: url + "/group/" + group.id + "/characters",
+            method: "POST",
+            data: JSON.stringify({player_id: player.id, characters: characters}),
+            contentType: "application/json"
+        })
+    }
+
     this.join = function(group_id) {
         return $.ajax({
             url: url + "/group/" + group_id + "/join", 
@@ -37,6 +46,14 @@ var AvalonService = function() {
             method: "POST", 
             data: JSON.stringify({player_id: player.id, name: player.name, photo: ''}),
             contentType: "application/json"
+        });
+    }
+
+    this.playerView = function(group, player) {
+        return $.ajax({
+            url: url + "/group/" + group.id + "/player_view",
+            method: "GET",
+            data: {player_id: player.id}
         });
     }
 

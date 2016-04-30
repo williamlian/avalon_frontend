@@ -51,7 +51,11 @@ var HomeView = function(service) {
             console.log("response from create " + JSON.stringify(response))
             if (response.success) {
                 view.clearHandler();
-                characterView = new CharacterView(view.service);
+                characterView = new CharacterView(
+                    response.group,
+                    response.player,
+                    view.service
+                );
                 $('body').html(characterView.$el);
             } else {
                 window.alert("Error: " + response.message)

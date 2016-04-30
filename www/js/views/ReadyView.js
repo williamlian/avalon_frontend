@@ -1,5 +1,6 @@
 var ReadyView = function(service, response) {
 	this.player = response.player;
+    this.service = service;
 
     this.initialize = function () {
         this.$el = $('<div/>');
@@ -21,8 +22,8 @@ var ReadyView = function(service, response) {
         promise.done(function(response) {
             console.log("response from ready " + JSON.stringify(response))
             if (response.success) {
-                readyView = new ReadyView(view.service, response);
-                $('body').html(readyView.$el);
+                gameView = new GameView(response.group, response.player, self.service);
+                $('body').html(gameView.$el);
             } else {
                 window.alert("Error: " + response.message)
             }

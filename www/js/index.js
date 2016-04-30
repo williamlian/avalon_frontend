@@ -68,6 +68,7 @@ var app = {
         HomeView.prototype.template = Handlebars.compile($("#home-tpl").html());
         ReadyView.prototype.template = Handlebars.compile($("#ready-tpl").html());
         CharacterView.prototype.template = Handlebars.compile($("#character-tpl").html());
+        GameView.prototype.template = Handlebars.compile($("#game-tpl").html());
     },
 
     _initRouter: function() {
