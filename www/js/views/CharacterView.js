@@ -1,30 +1,47 @@
-var CharacterView = function(group, player, service) {
-	this.group = group;
-	this.player = player;
-	this.service = service;
+var CharacterView = function() {
+	this.service = app.service;
+	this.player = null;
+	this.group = null;
 
 	this.initialize = function() {
 		self = this;
 		self.$el = $('<div />');
-        service.getCharacters().done(function(response) {
-        	if (response.success) {
-        		self.render(response.characters);
+		self.service.status(app.player_id).done(function(response) {
+			if (response.success) {
+				self.group = response.group;
+				self.player = response.player;
+        		self.service.getCharacters().done(function(response) {
+		        	if (response.success) {
+		        		self.render(response.characters);
+					} else {
+						window.alert("Error: " + response.message);
+					}
+		        })
 			} else {
 				window.alert("Error: " + response.message);
 			}
-        })
+		});
 	}
 
 	this.render = function(characters) {
 		var self = this;
 		this.$el.html(this.template(characters));
 		$('.btn#submit', this.$el).on('click', this, this.submit);
+		$('#back').on('click', this, this.cancel);
 		$('.character').each(function(i) {
 			char = $(this);
 			console.log('adding listener to chars ' + char.attr('name'));
 			char.on('toggle', self, self.onToggle);
 		});
 		return this;
+	}
+
+	this.cancel = function(event) {
+		var self = event.data;
+		self.service.quit(app.player_id).done(function(response) {
+			app.savePlayerId(0);
+			window.location = '#home';
+		});
 	}
 
 	this.updateCount = function() {
@@ -61,10 +78,9 @@ var CharacterView = function(group, player, service) {
 			console.log("response from character " + JSON.stringify(response))
             if (response.success) {
                 self.clearHandler();
-                readyView = new ReadyView(self.service, response);
-                $('body').html(readyView.$el);
+                window.location = '#ready';
             } else {
-                window.alert("Error: " + response.message)
+                window.alert("Error: " + response.message);
             }
 		})
 		return false;

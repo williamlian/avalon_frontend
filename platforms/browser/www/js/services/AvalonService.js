@@ -57,6 +57,21 @@ var AvalonService = function() {
         });
     }
 
+    this.status = function(player_id) {
+        return $.ajax({
+            url: url + "/status",
+            method: "GET",
+            data: {player_id: player_id}
+        });
+    }
+
+    this.quit = function(player_id) {
+        return $.ajax({
+            url: url + "/player/" + player_id,
+            method: "DELETE"
+        });
+    }
+
     this.toString = function() {
         return "Avalon service @ " + url;
     }

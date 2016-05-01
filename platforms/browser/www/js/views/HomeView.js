@@ -1,10 +1,9 @@
-var HomeView = function(service) {
+var HomeView = function() {
 
-    this.service = service;
-    this.newTemplate = Handlebars.compile($("#new-subtpl").html());
-    this.joinTemplate = Handlebars.compile($("#join-subtpl").html());
+    this.service = app.service;
 
     this.initialize = function () {
+        window.clearTimeout(app.refresher);
         this.$el = $('<div/>');
         this.render();
     };
@@ -27,7 +26,7 @@ var HomeView = function(service) {
     this.renderNew = function(event) {
         self = event.data
         $('.btn#join', self.$el).off();
-        $('.content', self.$el).html(self.newTemplate);
+        $('.content', self.$el).html(self.newTemplate());
 
         $('.control-item#new', self.$el).addClass('active');
         $('.control-item#join', self.$el).removeClass('active');
@@ -37,7 +36,7 @@ var HomeView = function(service) {
     this.renderJoin = function(event) {
         self = event.data
         $('.btn#create', self.$el).off('click');
-        $('.content', self.$el).html(self.joinTemplate);
+        $('.content', self.$el).html(self.joinTemplate());
 
         $('.control-item#join', self.$el).addClass('active');
         $('.control-item#new', self.$el).removeClass('active');
@@ -51,12 +50,8 @@ var HomeView = function(service) {
             console.log("response from create " + JSON.stringify(response))
             if (response.success) {
                 view.clearHandler();
-                characterView = new CharacterView(
-                    response.group,
-                    response.player,
-                    view.service
-                );
-                $('body').html(characterView.$el);
+                app.savePlayerId(response.player.id);
+                window.location = '#character'
             } else {
                 window.alert("Error: " + response.message)
             }
@@ -71,8 +66,8 @@ var HomeView = function(service) {
             console.log("response from join " + JSON.stringify(response))
             if (response.success) {
                 view.clearHandler();
-                readyView = new ReadyView(view.service, response);
-                $('body').html(readyView.$el);
+                app.savePlayerId(response.player.id);
+                window.location = '#ready'
             } else {
                 window.alert("Error: " + response.message)
             }
