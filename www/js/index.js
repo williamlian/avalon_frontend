@@ -3,8 +3,8 @@ var app = {
     COOKIE_ID: 'Avalon-Player-Id',
 
     service: null,
-    player_id: null,
-    refresher: null,
+    player_id: 0,
+    refresher: 0,
 
     // global react call
     getStatus: function() {
@@ -13,23 +13,28 @@ var app = {
         this.service.status(this.player_id).done(function(response) {
             console.log('status response: ' + JSON.stringify(response));
             if(response.success) {
-                if(response.group == null) {
+                if (response.group == null) {
                     console.log('player does not in game');
-                    window.clearInterval(window.refresher);
                     window.location = '#home';
-                } else if(response.group.status == 'created' && response.player.is_admin) {
+                } else if (response.group.status == 'created' && response.player.is_admin) {
                     console.log('owner rejoin to ready mode');
-                    window.clearInterval(window.refresher);
                     window.location = '#character';
-                } else if(response.group.status == 'open' && response.player.status == 'created') {
-                    console.log('group open user not ready');
-                    window.clearInterval(window.refresher);
-                    window.location = '#ready';
-                } else if(response.group.status == 'open' && response.player.status == 'ready') {
-                    console.log('group open user ready');
-                    window.location = '#game';
+                } else if (response.group.status == 'open') {
+                    if (response.player.status == 'created') {
+                        console.log('group open user not ready');
+                        window.location = '#ready';
+                    } else {
+                        console.log('group open user ready');
+                        window.location = '#game';
+                    }
+                } else if(response.group.status == 'voting') {
+                    console.log('group in voting mode');
+                    window.location = '#vote'
                 } else if(response.group.status == 'started') {
                     console.log('game started');
+                    window.location = '#game';
+                } else if (response.group.status == 'quest') {
+                    console.log('group is doing quest');
                     window.location = '#game';
                 } else {
                     console.log('player status unknown');
@@ -96,13 +101,15 @@ var app = {
         ReadyView.prototype.template = Handlebars.compile($("#ready-tpl").html());
         CharacterView.prototype.template = Handlebars.compile($("#character-tpl").html());
         GameView.prototype.template = Handlebars.compile($("#game-tpl").html());
+        KingView.prototype.template = Handlebars.compile($("#king-tpl").html());
+        VoteView.prototype.template = Handlebars.compile($("#vote-tpl").html());
+        QuestView.prototype.template = Handlebars.compile($("#quest-tpl").html());
 
         HomeView.prototype.newTemplate = Handlebars.compile($("#new-subtpl").html());
         HomeView.prototype.joinTemplate = Handlebars.compile($("#join-subtpl").html());
     },
 
     _initRouter: function() {
-        var self = this;
         router.addRoute('home', function() {
             $('body').html(new HomeView().$el);
         });
@@ -114,6 +121,15 @@ var app = {
         });
         router.addRoute('game', function() {
             $('body').html(new GameView().$el);
+        });
+        router.addRoute('king', function() {
+            $('body').html(new KingView().$el);
+        });
+        router.addRoute('vote', function() {
+            $('body').html(new VoteView().$el);
+        });
+        router.addRoute('quest', function() {
+            $('body').html(new QuestView().$el);
         });
 
         router.start();

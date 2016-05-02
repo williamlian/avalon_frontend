@@ -29,9 +29,16 @@ var CharacterView = function() {
 		$('.btn#submit', this.$el).on('click', this, this.submit);
 		$('#back').on('click', this, this.cancel);
 		$('.character').each(function(i) {
-			char = $(this);
+			var char = $(this);
 			console.log('adding listener to chars ' + char.attr('name'));
 			char.on('toggle', self, self.onToggle);
+
+			//hack
+			char.on('click', self, function(event){
+				$('.toggle', event.currentTarget).each(function() {
+					$(this).addClass('active')
+				})
+			});
 		});
 		return this;
 	}
@@ -45,7 +52,7 @@ var CharacterView = function() {
 	}
 
 	this.updateCount = function() {
-		len = $('.toggle.active', this.$el).length;
+		var len = $('.toggle.active', this.$el).length;
 		$('#select-count').html(len);
 	}
 

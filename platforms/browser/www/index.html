@@ -118,12 +118,19 @@
         <header class="bar bar-nav">
             <h1 class="title">Playing</h1>
         </header>
+        {{#if can_choose_knights}}
+        <nav class="bar bar-header-secondary">
+            <button class="btn btn-primary btn-block" id="king">
+                Choose Knights
+            </button>
+        </nav>
+        {{/if}}
         <div class="bar bar-secondary bar-footer">
             <button class="btn btn-negative btn-block" id="quit">
                 Quit
             </button>
         </div>
-        <div class="content">
+        <div class="content game-view">
             <ul class="table-view">
                 <li class="table-view-cell">
                     <strong class="pull-left">Group ID</strong>
@@ -141,14 +148,129 @@
                     <strong class="pull-left">Character</strong>
                     <div class="pull-right">{{ player.character }}</div>
                 </li>
+                <li class="table-view-cell">
+                    <strong class="pull-left">Quest Result</strong>
+                    <div class="pull-right">
+                        Success: {{ group.quest_result.success }}
+                        Fail: {{ group.quest_result.failed }}
+                    </div>
+                </li>
             </ul>
             <ul class="table-view">
                 {{#each group.players}}
                 <li class="table-view-cell media">
                     <p>{{ this.name }}</p>
                     <p>{{ this.character }}</p>
-                    <p>King: {{ this.is_king }}</p>
+                    {{#if this.is_king}}
+                        <p>King</p>
+                    {{/if}}
                 </li>
+                {{/each}}
+            </ul>
+        </div>
+    </script>
+
+    <script id="king-tpl" type="text/template">
+        <header class="bar bar-nav">
+            <h1 class="title">Choose Your Knights</h1>
+        </header>
+        <nav class="bar bar-header-secondary">
+            <p style="text-align: center;"><span id="knight-count">0</span> Selected</p>
+        </nav>
+        <div class="bar bar-secondary bar-footer">
+            <button class="btn btn-primary btn-block" id="start-vote">Start Vote</button>
+        </div>
+        <div class="content">
+            <ul class="table-view">
+                {{#each group.players}}
+                <li class="table-view-cell knight" name="{{ this.player_sequence }}">
+                    <div>
+                        <p>{{ this.name }}</p>
+                        <p>{{ this.character }}</p>
+                    </div>
+                    <div class="toggle">
+                        <div class="toggle-handle"></div>
+                    </div>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+    </script>
+
+    <script id="vote-tpl" type="text/template">
+        <header class="bar bar-nav">
+            <h1 class="title">Vote</h1>
+        </header>
+        <nav class="bar bar-header-secondary">
+            <p style="text-align: center;">
+                Vote Result:
+                {{vote_result}}
+            </p>
+        </nav>
+        <div class="bar bar-secondary bar-footer">
+            {{#if is_voting}}
+            <table width="100%">
+                <tr>
+                    <td>
+                        <button class="btn btn-primary btn-block" id="accept">Accept</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-negative btn-block" id="reject">Reject</button>
+                    </td>
+                </tr>
+            </table>
+            {{/if}}
+            {{#if show_start}}
+            <button class="btn btn-primary btn-block" id="start-quest">Start Quest</button>
+            {{/if}}
+            {{#if show_skip}}
+            <button class="btn btn-negative btn-block" id="end-turn">End Turn</button>
+            {{/if}}
+            {{#if show_voter}}
+            <p>Please wait for the vote completes.</p>
+            {{/if}}
+        </div>
+        <div class="content">
+            <ul class="table-view">
+                {{#each group.players}}
+                <li class="table-view-cell media">
+                    <p>{{ this.name }}</p>
+                    <p>{{ this.character }}</p>
+                    {{#if this.is_knight}}
+                        <p>Knight</p>
+                    {{/if}}
+                    <p>{{ this.last_vote }}</p>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+    </script>
+
+    <script id="quest-tpl" type="text/template">
+        <header class="bar bar-nav">
+            <h1 class="title">Take Your Quest</h1>
+        </header>
+        <div class="bar bar-secondary bar-footer">
+            <table width="100%">
+                <tr>
+                    <td>
+                        <button class="btn btn-primary btn-block" id="success">Success</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-negative btn-block" id="fail">Fail</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="content">
+            <ul class="table-view">
+                {{#each group.players}}
+                {{#if this.is_knight}}
+                    <li class="table-view-cell media">
+                        <p>{{ this.name }}</p>
+                        <p>{{ this.character }}</p>
+                    </li>
+                {{/if}}
                 {{/each}}
             </ul>
         </div>
@@ -164,6 +286,9 @@
     <script type="text/javascript" src="js/views/ReadyView.js"></script>
     <script type="text/javascript" src="js/views/CharacterView.js"></script>
     <script type="text/javascript" src="js/views/GameView.js"></script>
+    <script type="text/javascript" src="js/views/KingView.js"></script>
+    <script type="text/javascript" src="js/views/VoteView.js"></script>
+    <script type="text/javascript" src="js/views/QuestView.js"></script>
 
     <script type="text/javascript">
         app.initialize();
