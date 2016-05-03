@@ -49,13 +49,15 @@
         </div>
     </script>
     <script id="new-subtpl" type="text/template">
-        <form class="input-group">
+        <div class="card padded-card">
+            <p>Create a new game by entering the game size</p>
             <input type="text" placeholder="Group Size" id="size">
             <button class="btn btn-primary btn-block" id="create">Create</button>
-        </form>
+        </div>
     </script>
     <script id="join-subtpl" type="text/template">
-        <form class="input-group">
+        <div class="card padded-card">
+            <p>Join a room by group number</p>
             <input type="text" placeholder="Room Number" id="group_id">
             <button class="btn btn-primary btn-block" id="join">Join</button>
         </form>
@@ -66,17 +68,21 @@
             <a class="icon icon-left-nav pull-left" id="back"></a>
             <h1 class="title">Select Characters</h1>
         </header>
-        <nav class="bar bar-header-secondary">
-            <p style="text-align: center;"><span id="select-count">0</span> Selected</p>
+        <nav class="bar bar-header-secondary vertical-center-parent">
+            <p class="character-count vertical-center-child">
+            <span id="select-count">0</span> Selected</p>
         </nav>
         <div class="bar bar-standard bar-footer">
             <button class="btn btn-primary btn-block" id="submit">Submit</button>
         </div>
         <div class="content">
-            <ul class="table-view">
+            <ul class="table-view content-list">
                 {{#each this}}
-                <li class="table-view-cell character" name="{{ this }}">
-                    {{ this }}
+                <li class="table-view-cell character" name="{{ this.key }}">
+                    <div class="character-item">
+                        <span class="{{ this.side }}"/>
+                        {{ this.name }}
+                    </div>
                     <div class="toggle">
                         <div class="toggle-handle"></div>
                     </div>
@@ -91,7 +97,7 @@
             <h1 class="title">Get Ready</h1>
         </header>
         <div class="content">
-            <ul class="table-view">
+            <ul class="table-view content-list">
                 <li class="table-view-cell">
                     <strong class="pull-left">Group ID</strong>
                     <div class="pull-right">{{ group.id }}</div>
@@ -109,10 +115,11 @@
                     <div class="pull-right">{{ player.character }}</div>
                 </li>
             </ul>
-            <form class="input-group">
+            <div class="card padded-card">
+                <p>Type in your name to get ready</p>
                 <input type="text" placeholder="Name" id="name">
                 <button class="btn btn-primary btn-block" id="ready">Ready</button>
-            </form>
+            </div>
         </div>
     </script>
 
@@ -291,6 +298,8 @@
     <script type="text/javascript" src="js/views/KingView.js"></script>
     <script type="text/javascript" src="js/views/VoteView.js"></script>
     <script type="text/javascript" src="js/views/QuestView.js"></script>
+
+    <script type="text/javascript" src="js/helper/CharacterPresenter.js"></script>
 
     <script type="text/javascript">
         app.initialize();

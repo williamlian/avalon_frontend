@@ -25,7 +25,7 @@ var CharacterView = function() {
 
 	this.render = function(characters) {
 		var self = this;
-		this.$el.html(this.template(characters));
+		this.$el.html(this.template( CharacterPresenter.presentList(characters) ));
 		$('.btn#submit', this.$el).on('click', this, this.submit);
 		$('#back').on('click', this, this.cancel);
 		$('.character').each(function(i) {
@@ -33,12 +33,15 @@ var CharacterView = function() {
 			console.log('adding listener to chars ' + char.attr('name'));
 			char.on('toggle', self, self.onToggle);
 
-			//hack
-			char.on('click', self, function(event){
-				$('.toggle', event.currentTarget).each(function() {
-					$(this).addClass('active')
-				})
-			});
+			if(!window.isMobile()) {
+				char.on('click', self, function(event){
+					$('.toggle', event.currentTarget).each(function() {
+						var e = $(this);
+						e.hasClass('active') ? e.removeClass('active') : e.addClass('active');
+						self.updateCount();
+					})
+				});
+			}
 		});
 		return this;
 	}
