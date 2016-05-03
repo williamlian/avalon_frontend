@@ -5,7 +5,7 @@
   <name>Avalon</name>
   <description>Helper to play Avalon the board game.</description>
   <author href="http://avalon.williamlian.com" email="avalon@williamlian.com">William Lian</author>
-  <content src="www/index.html"/>
+  <content src="index.html"/>
   <preference name="DisallowOverscroll" value="true"/>
   <preference name="android-minSdkVersion" value="14"/>
   <plugin name="cordova-plugin-battery-status" source="npm" spec="~1.1.1"/>
