@@ -6,19 +6,45 @@ var app = {
     player_id: 0,
     refresher: 0,
 
-    // Application Constructor
-    initialize: function() {
-        window.refresher = null;
-        this.service = new AvalonService();
-        this.service.initialize("http://avalon.williamlian.com/api/").done(this.bindEvents());
-        console.log('initializing service');
+    getPlayerId: function() {
+        var name = app.COOKIE_ID + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length,c.length);
+            }
+        }
+        return null;
     },
 
+    savePlayerId: function(id) {
+        cookie = app.COOKIE_ID + "=" + id;
+        app.player_id = id;
+        console.log('setting cookie: ' + cookie);
+        document.cookie = cookie;
+    }
+};
+
+(function() {
+
+    // Application Constructor
+    this.initialize = function() {
+        var self = this;
+        window.refresher = null;
+        app.service = new AvalonService();
+        app.service.initialize("http://avalon.williamlian.com/api/").done(self.bindEvents());
+        console.log('initializing service');
+    };
+
     // global react call
-    getStatus: function() {
-        this.player_id = this.getPlayerId();
-        console.log('saved player id = ' + this.player_id);
-        this.service.status(this.player_id).done(function(response) {
+    this.getStatus = function() {
+        app.player_id = app.getPlayerId();
+        console.log('saved player id = ' + app.player_id);
+        app.service.status(app.player_id).done(function(response) {
             console.log('status response: ' + JSON.stringify(response));
             if(response.success) {
                 if (response.group == null) {
@@ -53,42 +79,40 @@ var app = {
                 window.alert("Error: " + response.message);
             }
         })
-    },
+    };
 
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        console.log('service initialized, service=' + this.service)
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
+    bindEvents = function() {
+        var self = this;
+        console.log('service initialized, service=' + app.service)
+        document.addEventListener('deviceready', function(){
+            self.onDeviceReady();
+        }, false);
+    };
     // deviceready Event Handler
     //
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app._initApp();
-        app._initTemplates();
-        app._initRouter();
-        app.getStatus();
-    },
+    onDeviceReady = function() {
+        this._initApp();
+        this._initTemplates();
+        this._initRouter();
+        this.getStatus();
+    };
 
-    _initApp: function() {
-        console.log("init app, status bar = " + navigator.StatusBar)
-        console.log("init app, window alert = " + navigator.notification)
-        if (navigator.StatusBar) {
-            navigator.StatusBar.overlaysWebView( false );
-            navigator.StatusBar.backgroundColorByHexString('#ffffff');
-            navigator.StatusBar.styleDefault();
-            console.log('status bar set')
-        }
+    _initApp = function() {
+        StatusBar.overlaysWebView( false );
+        StatusBar.backgroundColorByHexString('#ffffff');
+        StatusBar.styleDefault();
         if (navigator.notification) {
             window.alert = function (message) {
                 navigator.notification.alert(
                     message,
                     null,
-                    APP_NAME,
+                    app.APP_NAME,
                     'OK'
                 );
             };
@@ -100,9 +124,9 @@ var app = {
             return check;
         }
         console.log('init app done')
-    },
+    };
 
-    _initTemplates: function() {
+    _initTemplates = function() {
         HomeView.prototype.template = Handlebars.compile($("#home-tpl").html());
         ReadyView.prototype.template = Handlebars.compile($("#ready-tpl").html());
         CharacterView.prototype.template = Handlebars.compile($("#character-tpl").html());
@@ -113,9 +137,9 @@ var app = {
 
         HomeView.prototype.newTemplate = Handlebars.compile($("#new-subtpl").html());
         HomeView.prototype.joinTemplate = Handlebars.compile($("#join-subtpl").html());
-    },
+    };
 
-    _initRouter: function() {
+    _initRouter = function() {
         router.addRoute('home', function() {
             $('body').html(new HomeView().$el);
         });
@@ -139,26 +163,9 @@ var app = {
         });
 
         router.start();
-    },
+    };
 
-    getPlayerId: function() {
-        var name = app.COOKIE_ID + "=";
-        var ca = document.cookie.split(';');
-        for(var i = 0; i <ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length,c.length);
-            }
-        }
-        return null;
-    },
-    savePlayerId: function(id) {
-        cookie = app.COOKIE_ID + "=" + id;
-        app.player_id = id;
-        console.log('setting cookie: ' + cookie);
-        document.cookie = cookie;
-    },
-};
+
+
+    this.initialize();
+}());
