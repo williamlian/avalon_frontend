@@ -61,11 +61,17 @@ var VoteView = function() {
         return this;
     };
 
+    this.detach = function() {
+        window.clearTimeout(this.refresher);
+        this.stopRefresh = true;
+    };
+
     this.startQuest = function(event) {
         var self = event.data;
         self.service.startQuest(self.response.group.id, self.response.player.id).done(function(response) {
             if(response.success) {
-
+                self.detach();
+                window.location = '#quest';
             } else {
                 window.alert("Error: " + response.message);
             }
@@ -76,7 +82,8 @@ var VoteView = function() {
         var self = event.data;
         self.service.endTurn(self.response.group.id, self.response.player.id).done(function(response) {
             if(response.success) {
-
+                self.detach();
+                window.location = '#game';
             } else {
                 window.alert("Error: " + response.message);
             }
@@ -87,7 +94,8 @@ var VoteView = function() {
         var self = event.data;
         self.service.vote(self.response.group.id, app.player_id, true).done(function(response) {
            if(response.success) {
-
+               self.detach();
+                window.location = '#vote';
            } else {
                window.alert("Error: " + response.message);
            }
@@ -98,7 +106,8 @@ var VoteView = function() {
         var self = event.data;
         self.service.vote(self.response.group.id, app.player_id, false).done(function(response) {
             if(response.success) {
-
+                self.detach();
+                window.location = '#vote';
             } else {
                 window.alert("Error: " + response.message);
             }
