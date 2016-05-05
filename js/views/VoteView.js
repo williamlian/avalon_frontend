@@ -12,9 +12,7 @@ var VoteView = function() {
 
     this.refresh = function() {
         var self = this;
-        if(self.stopRefresh) {
-            return;
-        }
+
         self.service.status(app.player_id).done(function (response) {
             if (response.group.status != "voting") {
                 console.log('no longer voting mode, go back game view');
@@ -24,8 +22,21 @@ var VoteView = function() {
             } else {
                 self.response = response;
                 self.render();
+                if(!self.stopRefresh) {
+                    self.refresher = window.setTimeout(function() {
+                        self.refresh();
+                    }, app.REFRESH_PERIOD);
+                }
                 console.log('vote view refreshed');
             }
+        });
+    };
+
+    this.refreshOnce = function() {
+        var self = this;
+        self.service.status(app.player_id).done(function (response) {
+            self.response = response;
+            self.render();
         });
     };
 
@@ -54,10 +65,6 @@ var VoteView = function() {
         $('#accept', self.$el).on('click', self, self.accept);
         $('#reject', self.$el).on('click', self, self.reject);
 
-        self.refresher = window.setTimeout(function() {
-            self.refresh();
-        }, app.REFRESH_PERIOD);
-
         return this;
     };
 
@@ -70,7 +77,6 @@ var VoteView = function() {
         var self = event.data;
         self.service.startQuest(self.response.group.id, self.response.player.id).done(function(response) {
             if(response.success) {
-                self.detach();
                 window.location = '#quest';
             } else {
                 window.alert("Error: " + response.message);
@@ -94,8 +100,7 @@ var VoteView = function() {
         var self = event.data;
         self.service.vote(self.response.group.id, app.player_id, true).done(function(response) {
            if(response.success) {
-               self.detach();
-                window.location = '#vote';
+                self.refreshOnce();
            } else {
                window.alert("Error: " + response.message);
            }
@@ -106,8 +111,7 @@ var VoteView = function() {
         var self = event.data;
         self.service.vote(self.response.group.id, app.player_id, false).done(function(response) {
             if(response.success) {
-                self.detach();
-                window.location = '#vote';
+                self.refreshOnce();
             } else {
                 window.alert("Error: " + response.message);
             }
