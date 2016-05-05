@@ -25,9 +25,8 @@ body {
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
     background-color:#FFF;
-
-    font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
-    font-size:12px;
+    font-family: 'HelveticaNeue', Helvetica, Arial, sans-serif;
+    font-size:12pt;
     height:100%;
     margin:0px;
     padding:0px;
@@ -36,7 +35,6 @@ body {
 
 /* Portrait layout (default) */
 .app {
-    background:url(../img/logo.png) no-repeat center top; /* 170px x 200px */
     position:absolute;             /* position in the center of the screen */
     left:50%;
     top:50%;
@@ -66,7 +64,23 @@ h1 {
     padding:0px;
     text-align:center;
 }
-
+.title {
+    font-size: 1.2em;
+    text-transform: uppercase;
+}
+p, input, div.segmented-control {
+    font-size: 1em;
+}
+.card.content-card {
+    margin: 20pt;
+}
+.center {
+    text-align: center;
+}
+.group-number {
+    font-size: 2em;
+    padding: 0 0.5em 0.5em 0.5em;
+}
 /* ---------------- */
 
 .padded-card {
@@ -94,7 +108,6 @@ h1 {
 }
 .character-item {
     font-size: 1em;
-    font-weight: bold;
 }
 .evil {
     display: inline-block;
@@ -115,3 +128,35 @@ h1 {
     height: 1em;
     margin-right: 0.5em;
 }
+.unknown {
+    display: inline-block;
+
+    vertical-align: middle;
+    border-radius: 50%;
+    background: #666;
+    width: 1em;
+    height: 1em;
+    margin-right: 0.5em;
+}
+
+/* --------------------- */
+
+.group-title-nav {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+.quest-nav {
+    font-size: 1em;
+    vertical-align: middle;
+    margin-bottom: 0;
+}
+.quest-nav .success {
+    color: #5cb85c;
+}
+.quest-nav .failed {
+    color: #d9534f;
+}
+
+
+

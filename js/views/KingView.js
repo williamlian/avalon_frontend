@@ -19,6 +19,10 @@ var KingView = function() {
 
     this.render = function() {
         var self = this;
+        for(i in self.response.group.players) {
+            player = self.response.group.players[i];
+            player.character = CharacterPresenter.present(player.character);
+        }
         this.$el.html(self.template(self.response));
         $('#start-vote').on('click', this, this.startVote);
         $('.knight').each(function() {
@@ -27,12 +31,13 @@ var KingView = function() {
             knight.on('toggle', self, self.onToggle);
 
 
-            //hack
-            knight.on('click', self, function(event){
-               $('.toggle', event.currentTarget).each(function() {
-                   $(this).addClass('active')
-               })
-            });
+            if(!window.isMobile()) {
+                knight.on('click', self, function(event){
+                   $('.toggle', event.currentTarget).each(function() {
+                       $(this).addClass('active')
+                   })
+                });
+            }
         });
         return this;
     };
@@ -49,7 +54,7 @@ var KingView = function() {
 
     this.updateCount = function() {
         var len = $('.toggle.active', this.$el).length;
-        $('#knight-count').html(len);
+        $('#select-count').html(len);
     };
 
     this.startVote = function(event) {

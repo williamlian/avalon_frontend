@@ -18,6 +18,10 @@ var QuestView = function() {
 
     this.render = function() {
         var self = this;
+        for(i in self.response.group.players) {
+            player = self.response.group.players[i];
+            player.character = CharacterPresenter.present(player.character);
+        }
         this.$el.html(self.template(self.response));
         $('#success', self.$el).on('click', self, self.success);
         $('#fail', self.$el).on('click', self, self.failed);

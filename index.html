@@ -50,14 +50,14 @@
         </div>
     </script>
     <script id="new-subtpl" type="text/template">
-        <div class="card padded-card">
+        <div class="card padded-card content-card">
             <p>Create a new game by entering the game size</p>
             <input type="text" placeholder="Group Size" id="size">
             <button class="btn btn-primary btn-block" id="create">Create</button>
         </div>
     </script>
     <script id="join-subtpl" type="text/template">
-        <div class="card padded-card">
+        <div class="card padded-card content-card">
             <p>Join a room by group number</p>
             <input type="text" placeholder="Room Number" id="group_id">
             <button class="btn btn-primary btn-block" id="join">Join</button>
@@ -98,25 +98,13 @@
             <h1 class="title">Get Ready</h1>
         </header>
         <div class="content">
-            <ul class="table-view content-list">
-                <li class="table-view-cell">
-                    <strong class="pull-left">Group ID</strong>
-                    <div class="pull-right">{{ group.id }}</div>
-                </li>
-                <li class="table-view-cell">
-                    <strong class="pull-left">Players</strong>
-                    <div class="pull-right">{{ group.player_count }}</div>
-                </li>
-                <li class="table-view-cell">
-                    <strong class="pull-left">Group Size</strong>
-                    <div class="pull-right">{{ group.size }}</div>
-                </li>
-                <li class="table-view-cell">
-                    <strong class="pull-left">Character</strong>
-                    <div class="pull-right">{{ player.character }}</div>
-                </li>
-            </ul>
-            <div class="card padded-card">
+            <div class="card padded-card content-card">
+                <p class='center'>You Group Number</p>
+                <h1 class="group-number center">{{ group.id }}</h1>
+                <p class="center">Ask your friends to join with this number!</p>
+                <p class="center">Group Capacity: {{ group.player_count }} / {{ group.size }}</p>
+            </div>
+            <div class="card padded-card content-card">
                 <p>Type in your name to get ready</p>
                 <input type="text" placeholder="Name" id="name">
                 <button class="btn btn-primary btn-block" id="ready">Ready</button>
@@ -126,54 +114,45 @@
 
     <script id="game-tpl" type="text/template">
         <header class="bar bar-nav">
+            <a class="icon icon-share pull-left" id="my-name-card"></a>
+            <a class="icon icon-person pull-right" id="my-character"></a>
             <h1 class="title">Playing</h1>
         </header>
-        {{#if can_choose_knights}}
-        <nav class="bar bar-header-secondary">
-            <button class="btn btn-primary btn-block" id="king">
-                Choose Knights
-            </button>
+        <nav class="bar bar-header-secondary vertical-center-parent">
+            <div class="group-title-nav vertical-center-child" style="left:1em">
+                <span class="icon icon-home"></span>
+                {{ group.id }}
+            </div>
+            <p class="quest-nav vertical-center-child" style="right:1em">
+                Last Quest 
+                <span class="good"/><span class="success">{{ group.quest_result.success }}</span> /
+                <span class="evil"/><span class="failed">{{ group.quest_result.failed }}</span>
+            </p>
         </nav>
-        {{/if}}
-        <div class="bar bar-secondary bar-footer">
+        <div class="bar bar-standard bar-footer">
             <button class="btn btn-negative btn-block" id="quit">
                 Quit
             </button>
         </div>
         <div class="content game-view">
-            <ul class="table-view">
-                <li class="table-view-cell">
-                    <strong class="pull-left">Group ID</strong>
-                    <div class="pull-right">{{ group.id }}</div>
-                </li>
-                <li class="table-view-cell">
-                    <strong class="pull-left">Players</strong>
-                    <div class="pull-right">{{ group.player_count }}</div>
-                </li>
-                <li class="table-view-cell">
-                    <strong class="pull-left">Group Size</strong>
-                    <div class="pull-right">{{ group.size }}</div>
-                </li>
-                <li class="table-view-cell">
-                    <strong class="pull-left">Character</strong>
-                    <div class="pull-right">{{ player.character }}</div>
-                </li>
-                <li class="table-view-cell">
-                    <strong class="pull-left">Quest Result</strong>
-                    <div class="pull-right">
-                        Success: {{ group.quest_result.success }}
-                        Fail: {{ group.quest_result.failed }}
-                    </div>
-                </li>
-            </ul>
-            <ul class="table-view">
+            {{#if can_choose_knights}}
+                <div class="card padded-card">
+                    <h1>It's your turn to be the king</h1>
+                    <p class="center">Now start nominating your knights</p>
+                    <button class="btn btn-primary btn-block" id="king">
+                        Choose Knights
+                    </button>
+                </div>
+            {{/if}}
+            <ul class="table-view content-list">
+                <li class="table-view-cell table-view-divider">Players {{ group.player_count }} / {{ group.size }}</li>
                 {{#each group.players}}
                 <li class="table-view-cell media">
-                    <p>{{ this.name }}</p>
-                    <p>{{ this.character }}</p>
-                    {{#if this.is_king}}
-                        <p>King</p>
-                    {{/if}}
+                    <p>
+                        {{#if this.is_king}}<span class="king-icon">[K] </span>{{/if}}
+                        {{ this.name }}
+                    </p>
+                    <p><span class="{{ this.character.side }}"/>{{ this.character.name }}</p>
                 </li>
                 {{/each}}
             </ul>
@@ -184,19 +163,24 @@
         <header class="bar bar-nav">
             <h1 class="title">Choose Your Knights</h1>
         </header>
-        <nav class="bar bar-header-secondary">
-            <p style="text-align: center;"><span id="knight-count">0</span> Selected</p>
+        <nav class="bar bar-header-secondary vertical-center-parent">
+            <p class="character-count vertical-center-child">
+            <span id="select-count">0</span> Selected</p>
         </nav>
-        <div class="bar bar-secondary bar-footer">
+        <div class="bar bar-standard bar-footer">
             <button class="btn btn-primary btn-block" id="start-vote">Start Vote</button>
         </div>
         <div class="content">
-            <ul class="table-view">
+            <ul class="table-view content-list">
+                <li class="table-view-cell table-view-divider">Select the players you want to start the quest</li>
                 {{#each group.players}}
                 <li class="table-view-cell knight" name="{{ this.player_sequence }}">
                     <div>
-                        <p>{{ this.name }}</p>
-                        <p>{{ this.character }}</p>
+                        <p>
+                        {{#if this.is_king}}<span class="king-icon">[K] </span>{{/if}}
+                            {{ this.name }}
+                        </p>
+                        <p><span class="{{ this.character.side }}"/>{{ this.character.name }}</p>
                     </div>
                     <div class="toggle">
                         <div class="toggle-handle"></div>
@@ -211,45 +195,46 @@
         <header class="bar bar-nav">
             <h1 class="title">Vote</h1>
         </header>
-        <nav class="bar bar-header-secondary">
-            <p style="text-align: center;">
-                Vote Result:
-                {{vote_result}}
+        <nav class="bar bar-header-secondary vertical-center-parent">
+            <p class="center vertical-center-child" style="left:1em;right:1em;">
+                Vote Result: {{vote_result}}
             </p>
         </nav>
-        <div class="bar bar-secondary bar-footer">
+        <div class="bar bar-standard bar-footer">
             {{#if is_voting}}
-            <table width="100%">
-                <tr>
-                    <td>
-                        <button class="btn btn-primary btn-block" id="accept">Accept</button>
-                    </td>
-                    <td>
-                        <button class="btn btn-negative btn-block" id="reject">Reject</button>
-                    </td>
-                </tr>
-            </table>
+            <button class="btn btn-link btn-nav pull-left" id="accept">
+                <span class="icon icon-check"></span>
+                Accept
+            </button>
+            <button class="btn btn-link btn-nav pull-right" id="reject">
+                Reject
+                <span class="icon icon-close"></span>
+            </button>
             {{/if}}
+
             {{#if show_start}}
             <button class="btn btn-primary btn-block" id="start-quest">Start Quest</button>
             {{/if}}
+
             {{#if show_skip}}
             <button class="btn btn-negative btn-block" id="end-turn">End Turn</button>
             {{/if}}
+
             {{#if show_voter}}
-            <p>Please wait for the vote completes.</p>
+            <button class="btn btn-block">Please wait for the vote completes.</p>
             {{/if}}
         </div>
         <div class="content">
-            <ul class="table-view">
+            <ul class="table-view content-list">
                 {{#each group.players}}
                 <li class="table-view-cell media">
-                    <p>{{ this.name }}</p>
-                    <p>{{ this.character }}</p>
-                    {{#if this.is_knight}}
-                        <p>Knight</p>
-                    {{/if}}
-                    <p>{{ this.last_vote }}</p>
+                    <p>
+                    {{#if this.is_knight}}<span class="knight-icon">[K] </span>{{/if}}
+                        {{ this.name }}
+                    </p>
+                    <p><span class="{{ this.character.side }}"/>{{ this.character.name }}
+                    </p>
+                    <p>{{#if this.last_vote }}Accept{{else}}Reject{{/if}}</p>
                 </li>
                 {{/each}}
             </ul>
@@ -261,26 +246,27 @@
             <h1 class="title">Take Your Quest</h1>
         </header>
         <div class="bar bar-secondary bar-footer">
-            <table width="100%">
-                <tr>
-                    <td>
-                        <button class="btn btn-primary btn-block" id="success">Success</button>
-                    </td>
-                    <td>
-                        <button class="btn btn-negative btn-block" id="fail">Fail</button>
-                    </td>
-                </tr>
-            </table>
+            <button class="btn btn-link btn-nav pull-left" id="success">
+                <span class="icon icon-check"></span>
+                Success
+            </button>
+            <button class="btn btn-link btn-nav pull-right" id="fail">
+                Fail
+                <span class="icon icon-close"></span>
+            </button>
         </div>
         <div class="content">
-            <ul class="table-view">
+            <ul class="table-view content-list">
                 {{#each group.players}}
-                {{#if this.is_knight}}
-                    <li class="table-view-cell media">
-                        <p>{{ this.name }}</p>
-                        <p>{{ this.character }}</p>
-                    </li>
-                {{/if}}
+                <li class="table-view-cell media">
+                    <p>
+                    {{#if this.is_knight}}<span class="knight-icon">[K] </span>{{/if}}
+                        {{ this.name }}
+                    </p>
+                    <p><span class="{{ this.character.side }}"/>{{ this.character.name }}
+                    </p>
+                    <p>{{#if this.last_vote }}Accept{{else}}Reject{{/if}}</p>
+                </li>
                 {{/each}}
             </ul>
         </div>

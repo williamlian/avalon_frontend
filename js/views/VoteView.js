@@ -43,6 +43,10 @@ var VoteView = function() {
             player.last_vote != null && player.is_king && group.last_vote_result == null
         );
         self.response["vote_result"] = (group.last_vote_result == null ? "N/A" : (group.last_vote_result ? 'Accepted' : 'Rejected'));
+        for(i in group.players) {
+            player = group.players[i];
+            player.character = CharacterPresenter.present(player.character);
+        }
         self.$el.html(self.template(self.response));
 
         $('#start-quest', self.$el).on('click', self, self.startQuest);
@@ -52,7 +56,7 @@ var VoteView = function() {
 
         self.refresher = window.setTimeout(function() {
             self.refresh();
-        }, 2000);
+        }, app.REFRESH_PERIOD);
 
         return this;
     };

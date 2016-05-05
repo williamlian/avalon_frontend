@@ -40,10 +40,24 @@ var CharacterPresenter = {
 			desc: 'Evil without special abilities',
 			side: 'evil'
 		},
+
+		'merlin_or_morgana':{
+			name: 'Merlin or Morgana?',
+			desc: 'It might be Merlin or Morgana',
+			side: 'unknown'
+		},
+		'unknown':{
+			name: 'Unknown',
+			desc: 'You do not know who it is',
+			side: 'unknown'
+		}
 	},
 
 	present: function(character) {
 		var presented = this.map[character];
+		if(presented == undefined) {
+			presented = this.map['unknown'];
+		}
 		presented['key'] = character;
 		return presented;
 	},

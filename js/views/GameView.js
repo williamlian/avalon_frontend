@@ -23,7 +23,7 @@ var GameView = function() {
         if($('body .game-view').length > 0 ) {
             app.refresher = window.setTimeout(function () {
                 self.refresh({data: self});
-            }, 2000);
+            }, app.REFRESH_PERIOD);
         } else {
             console.log('game view not attached, not refreshing any more');
         }
@@ -46,7 +46,6 @@ var GameView = function() {
                 window.location = '#quest';
                 return;
             } else {
-                self.$el.off('click');
                 self.render(response);
             }
         });
@@ -57,6 +56,10 @@ var GameView = function() {
         var self = this;
         self.$el.off('click');
         response["can_choose_knights"] = (response.group.status == 'started' && response.player.is_king)
+        for(i in response.group.players) {
+            player = response.group.players[i];
+            player.character = CharacterPresenter.present(player.character);
+        }
         this.$el.html(this.template(response));
         $('#quit').on('click', this, this.quit);
         $('#king').on('click', this, this.king);
